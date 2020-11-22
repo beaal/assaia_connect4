@@ -5,6 +5,8 @@ PLAYER_2 = '1'
 import numpy as np
 
 
+
+
 class Deck():
     def __init__(self, deck_size=DECK_SIZE, player_1=PLAYER_1, player_2=PLAYER_2):
         self.player_1 = player_1
@@ -42,6 +44,11 @@ class Deck():
     def check_winner(self):
         if self._check_rows() or self._check_columns() or self._check_diagonals():
             return True
+
+    def check_tie(self):
+        if ' ' not in ''.join(str(el) for el in np.nditer(self.deck_arr)):
+            return True
+
 
     def _check_diagonals(self):
         diags = [
@@ -86,12 +93,12 @@ if __name__ == "__main__":
         try:
             column = int(input(f'Player *{cur_player}*, please select column: '))
         except ValueError:
-            print(f'Please, input valid column number from 0 to {deck.columns}')
+            print(f'Please, input valid column number from 0 to {deck.columns-1}')
             print(deck)
             continue
 
         if column not in range(deck.columns):
-            print(f'Please, input valid column number from 0 to {deck.columns}')
+            print(f'Please, input valid column number from 0 to {deck.columns-1}')
             print(deck)
             continue
         if deck.update_deck(cur_player, column):
@@ -104,6 +111,10 @@ if __name__ == "__main__":
         if deck.check_winner():
             print(deck)
             print(f'Player {cur_player} wins! Bye!')
+            break
+        
+        if deck.check_tie():
+            print('No more moves available. Please, restart the game.')
             break
 
         if cur_player == PLAYER_1:
